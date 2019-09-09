@@ -1,29 +1,33 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <!-- Todo:  Time option for how fast animation should happen, max and low int values for bars -->
+  <div id="app" class="container-fluid">
+    <navbar></navbar>
+    <!-- Todo:  Time option for how fast animation should happen, max and low int values for bars -->
+    <div class="row container-fluid mx-auto py-auto">
+      <div class="col-md-8 mx-auto py-auto">
+        <!-- Todo: add in props: type of sort, and how much data there would be in bars -->
+        <!-- Todo: adjust how tall this should be. Preferiabilly it woudl be a rectangle  -->
+        <visualAid></visualAid>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
-
+import Vue from "vue";
+import visualAid from "@/components/visualAid.vue";
+import navbar from "@/components/navbar.vue";
+import bootstrap from "bootstrap";
 export default Vue.extend({
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
+    navbar,
+    visualAid
   }
 });
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
 </style>
