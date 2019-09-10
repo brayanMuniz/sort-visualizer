@@ -19,6 +19,15 @@ export default Vue.extend({
       default: () => ({
         legend: {
           display: false
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true
+              }
+            }
+          ]
         }
       })
     }

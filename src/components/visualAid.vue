@@ -1,5 +1,7 @@
 <template>
   <div>
+    <button @click="fillData">Reset</button>
+    <button @click="switchBarLocation(0,4)">Switch</button>
     <BarChart :chartData="dataCollection"></BarChart>
   </div>
 </template>
@@ -18,7 +20,7 @@ export default Vue.extend({
   props: {
     numberOfBars: {
       type: Number,
-      default: 30
+      default: 5
     }
   },
   data() {
@@ -33,28 +35,36 @@ export default Vue.extend({
   methods: {
     //   Todo: add all the methods and trigger visual when user promps it
     fillData() {
+      // Todo: look for a good blue to set as a default and a red to indicate that it was selected
+      // ? Should I only work with one dataSet and work with its data property
+      // ? How would I be able to change its color to red when "selected"
+      // Todo: Figure out what it is I want and what I need
       this.dataCollection = {
-        labels: [this.getRandomInt(), this.getRandomInt()],
-        // Todo: generate as many bars using numberOfBars
-        // Todo: look for a good blue to set as a default and a red to indicate that it was selected
-        datasets: [
-          {
-            label: "Data One",
-            backgroundColor: "#a87979",
-            data: [this.getRandomInt()]
-          },
-          {
-            label: "Data One",
-            backgroundColor: "#f87979",
-            data: [this.getRandomInt(), this.getRandomInt()]
-          }
-        ]
+        labels: [],
+        datasets: []
       };
+      for (let i = 0; i < this.numberOfBars; i++) {
+        this.dataCollection.datasets.push({
+          label: String(i),
+          backgroundColor: "#f87979",
+          data: [this.getRandomInt()]
+        });
+      }
     },
     getRandomInt(): Number {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+      return Math.floor(Math.random() * 3 * Math.random() * 3) + 1;
+    },
+    switchBarLocation(firstIndex: number, secondIndex: number) {
+      console.log(this.dataCollection.datasets[0].label);
+      let firstValue: dataSet = this.dataCollection.datasets[firstIndex];
+      let secondValue: dataSet = this.dataCollection.datasets[secondIndex];
+      this.dataCollection.datasets[firstIndex] = secondValue;
+      this.dataCollection.datasets[secondIndex] = firstValue;
+      console.log(this.dataCollection.datasets[0].label);
     }
   }
 });
 </script>
 
+<style lang="scss" scoped>
+</style>
