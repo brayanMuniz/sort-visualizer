@@ -5,6 +5,6 @@ export interface barDataType {
 
 export interface dataSet {
     label?: String,
-    backgroundColor: String,
+    backgroundColor?: String,
     data: Array<Number>
 }
