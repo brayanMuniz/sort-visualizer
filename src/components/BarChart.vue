@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 import Vue from "vue";
 import { Bar, mixins } from "vue-chartjs";
 const { reactiveProp } = mixins;
@@ -20,7 +20,6 @@ export default Vue.extend({
         legend: {
           display: false
         },
-        responsive: true,
         scales: {
           yAxes: [
             {
@@ -29,8 +28,21 @@ export default Vue.extend({
               }
             }
           ]
-        }
+        },
+        // Todo: this should be computed by totalBars / howLongEachBarShouldTake= duration
+        animation: {
+          duration: 1000
+        },
+        maintainAspectRatio: false
       })
+    }
+  },
+  mounted() {
+    this.renderChart(this.chartData, this.options);
+  },
+  watch: {
+    chartData: function() {
+      this.renderChart(this.chartData, this.options);
     }
   }
 });

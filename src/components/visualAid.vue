@@ -1,9 +1,11 @@
 <template>
   <div>
-    <button @click="fillData">Reset</button>
-    <button @click="bubbleSort">Bubble Sort</button>
-    <button @click="switchBarLocation(0,1)">Switch</button>
-    <BarChart :chartData="dataCollection"></BarChart>
+    <button @click="fillData()">Reset</button>
+    <button @click="bubbleSort()">Bubble Sort</button>
+    <button @click="insertionSort()">insertionSort</button>
+    <button @click="animteTest()">Animate Test</button>
+    <button @click="replaceValueTest()">kek</button>
+    <BarChart :chartData="chartData" :styles="myStyles"></BarChart>
   </div>
 </template>
 
@@ -13,7 +15,6 @@ import BarChart from "./BarChart.vue";
 import { dataSet, barDataType } from "@/types/barTypes";
 
 export default Vue.extend({
-  extends: BarChart,
   components: {
     BarChart
   },
@@ -21,7 +22,7 @@ export default Vue.extend({
   props: {
     numberOfBars: {
       type: Number,
-      default: 8
+      default: 5
     },
     highestNumber: {
       type: Number,
@@ -30,14 +31,22 @@ export default Vue.extend({
   },
   data() {
     return {
-      dataCollection: { labels: [], datasets: [] } as barDataType
+      dataCollection: {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: ["red", "blue", "blue", "blue", "blue", "blue"],
+            data: []
+          }
+        ]
+      } as barDataType,
+      height: 300
     };
   },
   mounted() {
     this.fillData();
   },
   methods: {
-    //   Todo: add all the methods and trigger visual when user promps it
     fillData() {
       // Todo: look for a good blue to set as a default and a red to indicate that it was selected
       // ? Should I only work with one dataSet and work with its data property
@@ -47,6 +56,7 @@ export default Vue.extend({
         labels: [],
         datasets: [
           {
+            backgroundColor: ["red", "blue", "blue", "blue", "blue", "blue"],
             data: []
           }
         ]
@@ -55,41 +65,132 @@ export default Vue.extend({
         this.dataCollection.labels.push(i);
         this.dataCollection.datasets[0].data.push(this.getRandomInt());
       }
-      console.log(this.dataCollection.datasets[0].data);
     },
-    getRandomInt(): Number {
+    getRandomInt(): number {
       return (
         Math.floor(Math.random() * 3 * Math.random() * this.highestNumber) + 1
       );
     },
-    switchBarLocation(firstIndex: number, secondIndex: number) {
-      let firstValue: dataSet = this.dataCollection.datasets[firstIndex];
-      let secondValue: dataSet = this.dataCollection.datasets[secondIndex];
-      this.dataCollection.datasets[firstIndex] = secondValue;
-      this.dataCollection.datasets[secondIndex] = firstValue;
-    },
+    // !Figured out why it does not animate!!!!
+    // If you push data it changes it, but if you replace it, it does not animate
     bubbleSort() {
-      // !DOES NOT UPDATE THE CHART BUT FILL CHART DATA DOES
-      // !WHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-      // Todo: for the selected element make it red
-      const lengthFirstDataSet = this.dataCollection.datasets[0].data.length;
-      this.dataCollection.datasets[0].data[0] = this.getRandomInt();
-      // for (let i = 0; i < lengthFirstDataSet; i++) {
-      //   for (let j = 0; j < lengthFirstDataSet - 1 - i; j++) {
-      //     let leftValue = this.dataCollection.datasets[0].data[j];
-      //     let leftIdx = this.dataCollection.labels[j];
-      //     let rightValue = this.dataCollection.datasets[0].data[j + 1];
-      //     let rightIdx = this.dataCollection.labels[j + 1];
-      //     console.log(leftValue > rightValue);
-      //     if (leftValue > rightValue) {
-      //       this.dataCollection.datasets[0].data[j] = rightValue;
-      //       this.dataCollection.labels[j] = rightIdx;
-      //       this.dataCollection.datasets[0].data[j + 1] = leftValue;
-      //       this.dataCollection.labels[j + 1] = leftIdx;
+      // const dataSetLength = this.dataCollection.datasets[0].data.length;
+      // for (let i = 0; i < dataSetLength; i++) {
+      //   for (let j = 0; j < dataSetLength - 1 - i; j++) {
+      //     let left = this.dataCollection.datasets[0].data[j];
+      //     let right = this.dataCollection.datasets[0].data[j + 1];
+      //     if (left > right) {
+      //       this.dataCollection.datasets[0].data[j] = right;
+      //       this.dataCollection.datasets[0].data[j + 1] = left;
+      //       this.dataCollection.datasets[0].data.push(0);
+      //       this.dataCollection.labels.push(0);
       //     }
       //   }
       // }
-      console.log(this.dataCollection.datasets[0].data);
+      let previousData = this.dataCollection.datasets[0].data;
+      this.dataCollection = {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: ["red", "blue", "blue", "blue", "blue", "blue"],
+            data: []
+          }
+        ]
+      };
+      const dataSetLength = previousData.length;
+      for (let i = 0; i < dataSetLength; i++) {
+        for (let j = 0; j < dataSetLength - 1 - i; j++) {
+          let previousColors = this.dataCollection.datasets[0].backgroundColor;
+          if (previousColors)
+            this.dataCollection.datasets[0].backgroundColor = this.changeBackgroundColor(
+              previousColors,
+              j,
+              j + 1
+            );
+
+          let left = previousData[j];
+          let right = previousData[j + 1];
+          if (left > right) {
+            previousData[j] = right;
+            previousData[j + 1] = left;
+          }
+        }
+        this.dataCollection.labels.push(i);
+        this.dataCollection.datasets[0].data = previousData;
+      }
+    },
+    // red means selected
+    changeBackgroundColor(
+      array: Array<string>,
+      prePositionOfBar: number,
+      postPositionOfBar: number
+    ): Array<string> {
+      array[prePositionOfBar] = "blue";
+      array[postPositionOfBar] = "red";
+      return array;
+    },
+    insertionSort() {
+      // Todo: post this on stack overflow and while someone finds a solution, Do more algo probnlems
+      const dataSetLength = this.dataCollection.datasets[0].data.length;
+      for (let i = 0; i < dataSetLength; i++) {
+        console.log(BarChart);
+        let sorted = false;
+        let counter = i;
+        while (!sorted) {
+          if (counter === 0 || counter == dataSetLength) {
+            sorted = true;
+          }
+          // Compare and go backwards
+          let left = this.dataCollection.datasets[0].data[counter];
+          let right = this.dataCollection.datasets[0].data[counter + 1];
+          if (right < left) {
+            this.dataCollection.datasets[0].data[counter] = right;
+            this.dataCollection.datasets[0].data[counter + 1] = left;
+            counter--;
+          } else {
+            sorted = true;
+          }
+        }
+      }
+    },
+    // Todo: parameter1: dataType to change this.dataCollection, and parameter2 is which dataset
+    changeData(newNumber: number, dataSetIndex: number, dataIndex: number) {
+      this.dataCollection.datasets[dataSetIndex].data[dataIndex] = newNumber;
+    },
+    replaceValueTest() {
+      this.dataCollection.datasets[0].data[0] = 7;
+    },
+    animteTest() {
+      let dataHolder = this.dataCollection;
+      this.dataCollection = {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: "#f87979",
+            data: []
+          }
+        ]
+      };
+      for (var i = 0; i < 5; i++) {
+        dataHolder.datasets[0].data.forEach((data, index) => {
+          this.dataCollection.labels.push(index);
+          this.dataCollection.datasets[0].data.push(this.getRandomInt());
+        });
+      }
+    },
+    increaseHeight() {
+      this.height += 1;
+    }
+  },
+  computed: {
+    myStyles(): object {
+      return {
+        height: `${this.height}px`,
+        position: "relative"
+      };
+    },
+    chartData(): any {
+      return this.dataCollection;
     }
   }
 });
